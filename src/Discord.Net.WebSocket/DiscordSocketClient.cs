@@ -577,7 +577,8 @@ namespace Discord.WebSocket
                                         {
                                             var model = data.Guilds[i];
                                             var guild = AddGuild(model, state);
-                                            if (!guild.IsAvailable)
+											
+                                            if (!guild.IsAvailable || ApiClient.AuthTokenType == TokenType.User)
                                                 unavailableGuilds++;
                                             else
                                                 await GuildAvailableAsync(guild).ConfigureAwait(false);
@@ -595,6 +596,8 @@ namespace Discord.WebSocket
                                         _connection.CriticalError(new Exception("Processing READY failed", ex));
                                         return;
                                     }
+									if (ApiClient.AuthTokenType == TokenType.User)
+										await SyncGuildsAsync().ConfigureAwait(false);
 
                                     _lastGuildAvailableTime = Environment.TickCount;
                                     _guildDownloadTask = WaitForGuildsAsync(_connection.CancelToken, _gatewayLogger)
@@ -673,6 +676,8 @@ namespace Discord.WebSocket
                                         var guild = AddGuild(data, State);
                                         if (guild != null)
                                         {
+											if (ApiClient.AuthTokenType == TokenType.User)
+												await SyncGuildsAsync().ConfigureAwait(false);
                                             await TimedInvokeAsync(_joinedGuildEvent, nameof(JoinedGuild), guild).ConfigureAwait(false);
                                             await GuildAvailableAsync(guild).ConfigureAwait(false);
                                         }
