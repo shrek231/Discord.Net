@@ -25,7 +25,7 @@ namespace Program
 
         public async Task MainAsync()
         {
-            await _client.LoginAsync(TokenType.User, "NjM5OTgzNjMzMjY3OTQ5NTY4.X8SKyA.wZAzkPXNNQP-QJbywA9kEL1EaM8");
+            await _client.LoginAsync(TokenType.User, "<token>");
             await _client.StartAsync();
 
             await Task.Delay(Timeout.Infinite);
